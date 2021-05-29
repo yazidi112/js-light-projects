@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #space{
+            background-color: rgb(14, 13, 13);
+            position: relative;
+            width: 100%;
+            height: 900px;
+        }
+        .circle{
+            position: absolute;
+            margin: auto;
+            border-radius: 50%;
+            width:0px;
+            height: 0px;
+            background-color:beige;
+            border:1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="space"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+            function randomColor(){
+                var r = Math.random()*255;
+                var g = Math.random()*255;
+                var b = Math.random()*255;
+                var a = Math.random();
+                color = "rgba("+r+","+g+","+b+","+a+")";
+                return color;
+            }
+            
+            var timer = null;
+            var circleID = 0;
+            $("#space").on("mousedown",function(e){
+                if(e.button ==2)
+                    return;
+
+                circleID++;
+                
+                var x = e.clientX-10;
+                var y = e.clientY-10;
+                var width = 0;
+                var height = 0;
+                var color =  randomColor();
+                var circle = "<div id='circle-"+circleID+"' class='circle' style='background-color:"+color+";top:"+y+"px;left:"+x+"px'></div>";
+                $("#space").append(circle);
+                timer = setInterval(function(){
+                     
+                    width = width +1;
+                    height = height +1;
+                    $("#circle-"+circleID).css({"width":width+"px","height":height+"px"});
+                    
+                },10);
+            });
+
+            $("#space").on("mouseup",function(e){
+                clearInterval(timer);
+                $("#circle-"+circleID).addClass("free");
+            });
+
+            var animation = setInterval(function(){
+                $('.free').each(function(){
+                    var top = parseInt($(this).css("top"))-(Math.round(Math.random()*5));
+                    var left = parseInt($(this).css("left"))-(Math.round(Math.random()*5));
+                    $(this).css("top",top+'px');
+                    $(this).css("left",left+'px');
+                });
+            },100);
+        
+        
+    </script>
+</body>
+</html>
