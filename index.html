@@ -79,8 +79,9 @@
                 });
                 $('.dead').each(function(){
                     var top = parseInt($(this).css("top"))+parseInt(10);
+                    var height = parseInt($(this).css("height"));
                     $(this).css("top",top+'px');
-                    if(top>500){
+                    if(top>500-height){
                         $(this).removeClass('dead');
                     }
                 });
