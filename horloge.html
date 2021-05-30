@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #space{
+            background-color: rgb(14, 13, 13);
+             
+            width: 100%;
+            height: 500px;
+        }
+
+        .line-sec{
+            position: absolute;
+            height: 100px;
+            width: 2px;
+            background-color: red;
+            margin: auto;
+            top: 149px;
+            left: 150px;
+            transform-origin: top left;
+        }
+
+        .line-min{
+            position: absolute;
+            height: 86px;
+            width: 6px;
+            background-color: #211e1e;
+            margin: auto;
+            top: 149px;
+            left: 148px;
+            transform-origin: top left;
+            border-radius: 10px;
+        }
+
+        .line-hour{
+            position: absolute;
+            height: 68px;
+            width: 8px;
+            background-color: #211e1e;
+            margin: auto;
+            top: 150px;
+            left: 147px;
+            border-radius: 10px;
+            transform-origin: top left;
+        }
+
+        .numeric{
+            position: absolute;
+            top: 182px;
+            left: 124px;
+        }
+        
+        .horloge{
+            background-image: url(horloge.jpg);
+            width: 301px;
+            height: 302px;
+            margin: auto;
+            position: relative;
+            top: 77px;
+            border: 16px solid gray;
+        }
+
+         
+         
+    </style>
+</head>
+<body>
+    <div id="space">
+        <div class="horloge">
+            <div class="line-hour"></div>
+            <div class="line-min"></div>
+            <div class="line-sec"></div>
+             <div class="numeric">00:00:00</div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        
+        var timer = setInterval(function(){
+            var date = new Date();
+            var sec = date.getSeconds();
+            var min = date.getMinutes();
+            var hour = date.getHours();
+            var anglesec = (sec * 6)+180;
+            var anglemin = (min * 6)+180;
+            var anglehour = (hour * 30)+180;
+            $(".numeric").html(hour+":"+min+":"+sec);
+            $('.line-sec').css("transform","rotate("+anglesec+"deg)");
+            $('.line-min').css("transform","rotate("+anglemin+"deg)");
+            $('.line-hour').css("transform","rotate("+anglehour+"deg)");
+        },1000);
+    </script>
+</body>
+</html>
