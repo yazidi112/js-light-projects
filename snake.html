@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: rgb(14, 13, 13);
+        }
+        #space{
+            background-color: rgb(14, 13, 13);
+            position: relative;
+            width: 100%;
+            height: 500px;
+        }
+        .circle{
+            position: absolute;
+            margin: auto;
+            border-radius: 50%;
+            width:0px;
+            height: 0px;
+            background-color:beige;
+            border:1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="space"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+            function randomColor(){
+                var r = Math.random()*255;
+                var g = Math.random()*255;
+                var b = Math.random()*255;
+                var a = Math.random();
+                color = "rgba("+r+","+g+","+b+","+a+")";
+                return color;
+            }
+            
+            function randomCircle(img){
+                circleID    = Math.random()*10000;
+                var x       = Math.random()*1400;
+                var y       = Math.random()*800;
+                var color   = randomColor();
+                var circle  = "<img src='img/"+img+".jpg' data-leftdirection='yes' data-topdirection='yes' id='c"+circleID+"'  class='circle free' style='width:0;height:0;background-color:"+color+";top:"+y+"px;left:"+x+"px' />";
+            
+                $("#space").append(circle);
+            }
+
+            var imgindex = 28;
+            circlesGenerator = setInterval(function(){
+                randomCircle(imgindex);
+                imgindex++;
+                if(imgindex==44)
+                    clearInterval(circlesGenerator);
+
+            },1000);
+
+            var animation = setInterval(function(){
+
+                $('.circle').each(function(){
+                    var leftdirection   = $(this).data('leftdirection');
+                    var topdirection    = $(this).data('topdirection');
+                    var width           = parseInt($(this).css("width"))+(Math.round(Math.random()*5));
+                    var left            = parseInt($(this).css("left"))-(Math.round(Math.random()*5));
+                    var top             = parseInt($(this).css("top"))-(Math.round(Math.random()*5));
+                    
+                    if(top<10)
+                        $(this).data('topdirection','no')
+                    if(top>500)
+                        $(this).data('topdirection','yes')
+
+                    if(topdirection=='yes'){
+                        $(this).css("top",top+'px');
+                    }else{
+                        $(this).css("top",-top+'px');
+                    }
+                   
+                    $(this).css("left",left+'px');
+                    if(width<150){
+                        $(this).css("width",width+'px');
+                        $(this).css("height",width+'px');
+                    }
+                });                
+            },500);
+    </script>
+</body>
+</html>
