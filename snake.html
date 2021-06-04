@@ -4,87 +4,185 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Snake game</title>
     <style>
         body{
-            background-color: rgb(14, 13, 13);
+            //background-color: rgb(14, 13, 13);
         }
         #space{
             background-color: rgb(14, 13, 13);
             position: relative;
-            width: 100%;
-            height: 500px;
+            width: 800px;
+            height: 550px;
         }
-        .circle{
-            position: absolute;
-            margin: auto;
+
+        .head{
+            position:absolute;
+            top:300px;
+            left:300px;
+            margin:auto;
+            width:50px;
+            height: 50px;
+            background-color:white;
+        }
+
+        .piece{
+            position:absolute;
+            top:300px;
+            left:300px;
+            margin:auto;
+            width:50px;
+            height: 50px;
+            background-color:rgb(166, 199, 21);
+        }
+
+        .food{
+            position:absolute;
+            margin:auto;
+            width:30px;
+            height: 30px;
+            background-color:rgb(207, 190, 33);
             border-radius: 50%;
-            width:0px;
-            height: 0px;
-            background-color:beige;
-            border:1px solid #ccc;
         }
+
+        #note{
+            background-color: black;
+            font-size: 20px;
+            text-align: center;
+            color: white;
+            width: 800px;
+        }
+         
     </style>
 </head>
 <body>
-    <div id="space"></div>
+    <div id="note">0</div>
+    <div id="space">
+        <div class="head" top="0" left="0"></div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-            function randomColor(){
-                var r = Math.random()*255;
-                var g = Math.random()*255;
-                var b = Math.random()*255;
-                var a = Math.random();
-                color = "rgba("+r+","+g+","+b+","+a+")";
-                return color;
+
+        var direction = "left";
+        var start     = "yes"
+
+        function addToBody(){
+            var top = $(".head").attr("top");
+            var left = $(".head").attr("left");
+            var piece = "<div class='piece' style='top:"+top+"px;left:"+left+"px'></div>";
+            $('#space').append(piece);
+        }
+        var animation = setInterval(function(){
+
+            if(start != "yes")
+                return;
+
+            var left = parseInt($('.head').css("left"));
+            var top  = parseInt($('.head').css("top"));
+
+            $('.head').attr('top',top);
+            $('.head').attr('left',left);
+
+            if(direction == "left"){
+                left -=30;
+            }
+
+            if(direction == "up"){
+                top -=30;
+            }
+
+            if(direction == "right"){
+                left +=30;
             }
             
-            function randomCircle(img){
-                circleID    = Math.random()*10000;
-                var x       = Math.random()*1400;
-                var y       = Math.random()*800;
-                var color   = randomColor();
-                var circle  = "<img src='img/"+img+".jpg' data-leftdirection='yes' data-topdirection='yes' id='c"+circleID+"'  class='circle free' style='width:0;height:0;background-color:"+color+";top:"+y+"px;left:"+x+"px' />";
-            
-                $("#space").append(circle);
+            if(direction == "down"){
+                top +=30;
             }
 
-            var imgindex = 28;
-            circlesGenerator = setInterval(function(){
-                randomCircle(imgindex);
-                imgindex++;
-                if(imgindex==44)
-                    clearInterval(circlesGenerator);
+            if(left<0)
+                left = 800;
 
-            },1000);
+            if(left>800)
+                left = 0;
 
-            var animation = setInterval(function(){
+            if(top<0)
+                top = 550;
 
-                $('.circle').each(function(){
-                    var leftdirection   = $(this).data('leftdirection');
-                    var topdirection    = $(this).data('topdirection');
-                    var width           = parseInt($(this).css("width"))+(Math.round(Math.random()*5));
-                    var left            = parseInt($(this).css("left"))-(Math.round(Math.random()*5));
-                    var top             = parseInt($(this).css("top"))-(Math.round(Math.random()*5));
-                    
-                    if(top<10)
-                        $(this).data('topdirection','no')
-                    if(top>500)
-                        $(this).data('topdirection','yes')
+            if(top>550)
+                top = 0
 
-                    if(topdirection=='yes'){
-                        $(this).css("top",top+'px');
-                    }else{
-                        $(this).css("top",-top+'px');
-                    }
-                   
-                    $(this).css("left",left+'px');
-                    if(width<150){
-                        $(this).css("width",width+'px');
-                        $(this).css("height",width+'px');
-                    }
-                });                
-            },500);
+            $('.head').css("left",left);
+            $('.head').css("top",top);
+            
+        },200);
+
+        var foods = setInterval(function(){
+            if(start != "yes")
+                return;
+
+            if($('.food').length==0){
+                var food = "<div class='food' style='top:"+(Math.random()*500)+"px;left:"+(Math.random()*750)+"px'></div>";
+                $('#space').append(food);
+            }
+        },2000);
+
+        var eat = setInterval(function(){
+            if(start != "yes")
+                return;
+
+            $(".food").each(function(){
+                var foodTop  = parseInt($(this).css("top"));
+                var foodLeft = parseInt($(this).css("left"));
+                var snackTop = parseInt($(".head").css("top"));
+                var snackLeft = parseInt($(".head").css("left"));
+                console.log((snackTop-foodTop)+"/"+(snackLeft-foodLeft));
+                var tol = 30;
+                var cond = snackTop>=foodTop-tol && snackTop<=foodTop+tol && snackLeft>=foodLeft-tol && snackLeft<=foodLeft+tol;
+                if(cond){
+                    console.log(cond);
+                    console.log("eaten");
+                    $(this).remove();
+                    $("#note").html(parseInt($("#note").html())+10);
+                    addToBody();
+                }
+            });
+        },100);
+
+        var pieces = setInterval(function(){
+            $(".piece").each(function(){
+                $(this).attr("top",$(this).css("top"));
+                $(this).attr("left",$(this).css("left"));
+                $(this).css("top",$(".head").attr("top")+"px");
+                $(this).css("left",$(".head").attr("left")+"px");
+            });
+        },100);
+
+        $(document).on("keydown",function(e){
+            
+            if(e.keyCode==38){
+                direction = "up";
+            }
+
+            if(e.keyCode==40){
+                direction = "down";
+            }
+
+            if(e.keyCode==37){
+                direction = "left";
+            }
+
+            if(e.keyCode==39){
+                direction = "right";
+            }
+
+            if(e.keyCode==32){
+                if(start=="yes")
+                    start = "no";
+                else
+                    start = "yes";
+            }
+             
+        });
     </script>
 </body>
 </html>
