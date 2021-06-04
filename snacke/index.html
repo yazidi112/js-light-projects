@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake game</title>
     <style>
-        body{
-            //background-color: rgb(14, 13, 13);
-        }
+        
         #space{
             background-color: rgb(14, 13, 13);
             position: relative;
@@ -23,7 +21,7 @@
             margin:auto;
             width:50px;
             height: 50px;
-            background-color:white;
+            background-color:white !important;
         }
 
         .piece{
@@ -51,52 +49,57 @@
             text-align: center;
             color: white;
             width: 800px;
+            color:rgb(166, 199, 21);
         }
          
     </style>
 </head>
 <body>
-    <div id="note">0</div>
-    <div id="space">
-        <div class="head" top="0" left="0"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="note">0</div>
+            <div id="space">
+                <div id="head" class="head piece" top="0px" left="0px"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            Ce jeu est créé par Imran YAZIDI le 04/06/2021
+        </div>
     </div>
+   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
         var direction = "left";
-        var start     = "yes"
-
-        function addToBody(){
-            var top = $(".head").attr("top");
-            var left = $(".head").attr("left");
-            var piece = "<div class='piece' style='top:"+top+"px;left:"+left+"px'></div>";
-            $('#space').append(piece);
-        }
+        var stop      = false;
+        var pas       = 30;
+        var tol       = 30;
+         
         var animation = setInterval(function(){
 
-            if(start != "yes")
+            if(stop)
                 return;
+
+            $('.head').attr('top',$('.head').css("top"));
+            $('.head').attr('left',$('.head').css("left"));
 
             var left = parseInt($('.head').css("left"));
             var top  = parseInt($('.head').css("top"));
 
-            $('.head').attr('top',top);
-            $('.head').attr('left',left);
-
             if(direction == "left"){
-                left -=30;
+                left -=pas;
             }
 
             if(direction == "up"){
-                top -=30;
+                top -=pas;
             }
 
             if(direction == "right"){
-                left +=30;
+                left +=pas;
             }
             
             if(direction == "down"){
-                top +=30;
+                top +=pas;
             }
 
             if(left<0)
@@ -114,10 +117,11 @@
             $('.head').css("left",left);
             $('.head').css("top",top);
             
+            
         },200);
 
         var foods = setInterval(function(){
-            if(start != "yes")
+            if(stop)
                 return;
 
             if($('.food').length==0){
@@ -127,7 +131,7 @@
         },2000);
 
         var eat = setInterval(function(){
-            if(start != "yes")
+            if(stop)
                 return;
 
             $(".food").each(function(){
@@ -135,27 +139,36 @@
                 var foodLeft = parseInt($(this).css("left"));
                 var snackTop = parseInt($(".head").css("top"));
                 var snackLeft = parseInt($(".head").css("left"));
-                console.log((snackTop-foodTop)+"/"+(snackLeft-foodLeft));
-                var tol = 30;
                 var cond = snackTop>=foodTop-tol && snackTop<=foodTop+tol && snackLeft>=foodLeft-tol && snackLeft<=foodLeft+tol;
                 if(cond){
-                    console.log(cond);
-                    console.log("eaten");
                     $(this).remove();
                     $("#note").html(parseInt($("#note").html())+10);
-                    addToBody();
+                    var prev = $(".piece").eq($(".piece").length-1).attr("id");
+                    var piece = "<div id=p"+Math.round(Math.random()*10000)+" class='piece body' prev=#"+prev+" top="+snackTop+" left="+snackLeft+" style='top:"+snackTop+"px;left:"+snackLeft+"px'></div>";
+                    $('#space').append(piece);
                 }
             });
         },100);
 
         var pieces = setInterval(function(){
+            if(stop)
+                return;
+
             $(".piece").each(function(){
-                $(this).attr("top",$(this).css("top"));
-                $(this).attr("left",$(this).css("left"));
-                $(this).css("top",$(".head").attr("top")+"px");
-                $(this).css("left",$(".head").attr("left")+"px");
+                if(!$(this).hasClass('head')){
+                    var top = $($(this).attr("prev")).attr("top");
+                    var left = $($(this).attr("prev")).attr("left");
+                    $(this).attr("top",$(this).css("top"));
+                    $(this).attr("left",$(this).css("left"));
+                    $(this).css("top",top);
+                    $(this).css("left",left);
+                }                     
             });
+
         },100);
+
+        
+
 
         $(document).on("keydown",function(e){
             
@@ -176,10 +189,7 @@
             }
 
             if(e.keyCode==32){
-                if(start=="yes")
-                    start = "no";
-                else
-                    start = "yes";
+                stop=stop?false:true;
             }
              
         });
