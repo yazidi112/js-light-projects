@@ -10,6 +10,7 @@
         
         #space{
             background-color: rgb(14, 13, 13);
+            background: url(img/sky.jpg) 100% 100%;
             position: relative;
             width: 800px;
             height: 550px;
@@ -28,32 +29,33 @@
         .wheel{
             position: absolute;
             margin: auto;
-            width: 50px;
-            height: 50px;
-            background-color: rgb(185 111 36);
+            width: 25px;
+            height: 25px;
+            background-color: rgb(189 182 175);
             border-radius: 50%;
             bottom: -17px;
+            border: 17px solid black;
         }
 
         .canal{
             position: absolute;
             margin: auto;
-            bottom: 58px;
+            bottom: 40px;
             width: 10px;
-            height: 218px;
+            height: 150px;
             transform: rotate(21deg);
-            background-color: rgb(207, 190, 33);
+            background-color: rgb(110 152 41);
             left: 56px;
             transform-origin: bottom left;
         }
 
         #battery{
-            bottom: 16px;
+            bottom: 66px;
             position: absolute;
             margin: auto;
             width: 140px;
             height: 60px;
-            background-color: rgb(207, 190, 33);
+            background-color: rgb(110 152 41);
             left: 16px;
         }
 
@@ -74,7 +76,24 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-
+        var x0 = 0;
+        var y0 = 0;
+        var x  = 0;
+        var y  = 0;
+        var deg = 0;
+        $(document).on("mousemove",function(e){
+            x0 =  x;
+            y0 = y;
+            x = e.clientX;
+            y = e.clientY;
+            
+            if(x>x0){
+                deg++;
+            }else{
+                deg--;
+            }
+            $(".canal").css("transform","rotate("+deg+"deg)")
+        });
         
     </script>
 </body>
