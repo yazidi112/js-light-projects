@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis game</title>
+    <style>
+        
+        #space{
+            background-color: rgb(14, 13, 13);
+            position: relative;
+            width: 800px;
+            height: 550px;
+            margin: auto;
+        }
+
+       .mallet{
+           position:    absolute;
+           bottom:      10px;
+           left:        325px;
+           width:       100px;
+           height:      20px;
+           background-color: blueviolet;
+       }
+
+       .ball{
+           position: absolute;
+           top: 470px;
+           left: 330px;
+           width: 50px;
+           height: 50px;
+           background-color: rgb(236, 223, 29);
+           border-radius: 50%;
+       }
+
+       #infos{
+        color: orange;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0px;
+        margin: auto;
+        font-size: 81px;
+        width: 300px;
+        height: 100px;
+        font-weight: bold;
+        display:none;
+        text-align: center;
+       }
+
+       #infos button{
+           font-size: 20px;
+       }
+         
+    </style>
+</head>
+<body>
+    <div id="space">
+        <div class="mallet"></div>
+        <div class="ball top right"></div>     
+        <div id="infos">
+            You lost
+            <button onclick="play()">Replay</button>
+        </div>
+    </div>
+   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        
+        var stop = false;
+        var time = 60;
+
+        function play(){
+            stop = false;
+            
+            reset();
+        }
+
+        function stp(){
+            $("#infos").show();
+            stop = true;
+            $(".ball").css("top","470px");
+            $(".ball").css("left","330px");
+        }
+
+        function reset(){
+            $(".ball").css("top","470px");
+            $(".ball").css("left","330px");
+            $(".ball").removeClass("bottom").addClass("top");
+            $(".ball").removeClass("left").addClass("right");
+            $(".mallet").css("left","325px");
+            $('#infos').hide();
+        }
+
+        var animate  = setInterval(function(){
+            if(stop)
+                return;
+
+            var top  = parseInt($(".ball").css("top"));
+            var left = parseInt($(".ball").css("left"));
+            var leftm = parseInt($(".mallet").css("left"));
+        
+            if(top<10){
+                $('.ball').removeClass("top").addClass("bottom");
+            }
+
+           
+
+            if(top>450){
+                if(Math.abs(leftm-left)>=0 && Math.abs(leftm-left)<=100){
+                    $('.ball').removeClass("bottom").addClass("top");
+                }
+            }
+
+            if(top>550){
+                stp();
+            }
+
+            if(left<10){
+                $('.ball').removeClass("left").addClass("right");
+            }
+
+             
+
+            if(left>750){
+                $('.ball').removeClass("right").addClass("left");
+            }
+
+            $(".top").each(function(){
+                top -= 10;
+            });
+
+            $(".bottom").each(function(){
+                top += 10;
+            });
+
+            $(".right").each(function(){
+                left += 5;
+            });
+
+            $(".left").each(function(){
+                left -= 5;
+            });
+
+            $(".ball").css("top",top+"px");
+            $(".ball").css("left",left+"px");
+        },time);
+
+       $(document).on("keydown",function(e){
+           
+           var left = parseInt($(".mallet").css("left"));
+            if(e.keyCode==39){
+                
+                if(left<700)
+                    $(".mallet").css("left",(left+5)+"px");
+            }
+            if(e.keyCode==37){
+                if(left>0)
+                    $(".mallet").css("left",(left-5)+"px");
+            }
+
+            if(e.keyCode==32){
+                stop = stop?false:true;
+            }
+       });
+
+    </script>
+</body>
+</html>

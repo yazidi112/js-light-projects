@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery game</title>
+    <style>
+        
+        #space{
+            background-color: rgb(14, 13, 13);
+            position: relative;
+            width: 800px;
+            height: 550px;
+        }
+
+        .body{
+            position:absolute;
+            top:300px;
+            left:300px;
+            margin:auto;
+            width:50px;
+            height: 50px;
+            background-color:white !important;
+        }
+
+        .wheel{
+            position: absolute;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            background-color: rgb(185 111 36);
+            border-radius: 50%;
+            bottom: -17px;
+        }
+
+        .canal{
+            position: absolute;
+            margin: auto;
+            bottom: 58px;
+            width: 10px;
+            height: 218px;
+            transform: rotate(21deg);
+            background-color: rgb(207, 190, 33);
+            left: 56px;
+            transform-origin: bottom left;
+        }
+
+        #battery{
+            bottom: 16px;
+            position: absolute;
+            margin: auto;
+            width: 140px;
+            height: 60px;
+            background-color: rgb(207, 190, 33);
+            left: 16px;
+        }
+
+         
+         
+    </style>
+</head>
+<body>
+     
+    <div id="space">
+        <div id="battery">
+            <div class="canal"></div>
+            <div class="wheel" style="left:10px"></div>
+            <div class="wheel" style="left:70px"></div>
+            <div></div>
+        </div>        
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        
+    </script>
+</body>
+</html>
