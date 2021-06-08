@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery game</title>
+    <style>
+        
+        #space{
+            background-color: rgb(14, 13, 13);
+            background: url(img/sky.jpg) 100% 100%;
+            position: relative;
+            width: 800px;
+            height: 550px;
+            margin:auto;
+        }
+
+    
+         #plane{
+            position: absolute;
+            margin: auto;
+            transform: rotate(0deg);
+            width:100px;
+            height:100px;
+         }
+
+         .missile{
+            position: absolute;
+            margin: auto;
+            width:5px;
+            height:5px;
+            background-color: red;
+            border-radius: 50%;
+         }
+
+         .selectDisable {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+         
+    </style>
+</head>
+<body>
+     
+    <div id="space">
+        <img id="plane" class="selectDisable" src="img/missile.png" alt="">      
+    </div>
+     
+    <script>   
+
+        var plane = document.querySelector("#plane");
+        plane.style.top = "430px";
+        plane.style.left = "300px";
+        plane.style.width = "100px";
+        var space = document.querySelector("#space");
+
+        space.addEventListener("mousemove",function(e){
+            plane.style.left = (e.clientX-space.getBoundingClientRect().x)+"px";
+        });
+
+        var Missile = function(e){
+            var missile = document.createElement("div");
+            missile.setAttribute("class","missile");
+            var top = plane.style.top;
+            var left = parseInt(plane.style.left)+parseInt(plane.style.width)/2;
+            missile.setAttribute("style","top:"+top+";left:"+left+"px");
+            space.appendChild(missile);
+            
+        }
+
+        
+        space.addEventListener("click",function(e){
+            new Missile(e); 
+        });
+
+        
+        setInterval(function(){
+            missiles = document.querySelectorAll(".missile");
+            for(var i=0;i<missiles.length;i++){
+                var top = missiles[i].style.top;
+                missiles[i].style.top = (parseInt(missiles[i].style.top)-10) +"px";
+            }
+        },100);
+        
+    </script>
+</body>
+</html>
