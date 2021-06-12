@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toc</title>
+    <style>
+        body{
+            background-color: gray;
+        }
+        #space{
+            background-color: rgb(14, 13, 13);
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: auto;
+            color:white;
+        }
+        .row{
+            width:100%;
+        }
+        .col{
+            width:150px;
+            height: 150px;
+            border:1px solid red;
+            display: inline-block;
+            text-align: center;
+            color:white;
+            vertical-align: top;
+            font-size: 124px;
+        }
+         
+    </style>
+</head>
+<body>
+    <div id="space">
+        <div class="row">
+            <div id="c00" i="0" j="0" class="col"></div>
+            <div id="c01" i="0" j="1" class="col"></div>
+            <div id="c02" i="0" j="2" class="col"></div>
+        </div>
+        <div class="row">
+            <div id="c10" i="1" j="0" class="col"></div>
+            <div id="c11" i="1" j="1" class="col"></div>
+            <div id="c12" i="1" j="2" class="col"></div>
+        </div>
+        <div class="row">
+            <div id="c20" i="2" j="0" class="col"></div>
+            <div id="c21" i="2" j="1" class="col"></div>
+            <div id="c22" i="2" j="2" class="col"></div>
+        </div>
+        <div>
+            Your ID: <span id="myid"></span>
+            <button onclick="reset()">Reset</button>
+        </div>
+    </div>
+   
+   
+    <script>
+        var id = Math.round(Math.random()*10000);
+        var myid = document.querySelector("#myid");
+        myid.innerHTML = id;
+        var stop = false;
+        var xo = "X";
+        var matrix = [['','',''],['','',''],['','','']];
+        var cols = document.querySelectorAll(".col");
+        cols.forEach(e=>{
+            e.addEventListener("click",function(){
+                if(stop)
+                    return;
+                if(e.innerHTML!="")
+                    return;
+                var i = e.getAttribute("i");
+                var j = e.getAttribute("j");
+                e.append(xo);
+                matrix[i][j] = xo;
+                check();
+                var form = new FormData();
+                form.append("player",id);
+                form.append("i",i);
+                form.append("j",j);
+                form.append("xo",xo);
+                fetch("/server.php",{
+                    method: "POST",
+                    body: form
+                    })
+                    .then(x=>x.text())
+                    .then(y=>console.log(y))
+            });
+        });
+
+        function check(){
+            var xo = ["X","O"]
+            for(var i=0;i<3;i++){
+                for(var j=0;j<2;j++){
+                    var a = matrix[i][0]==xo[j] && matrix[i][1]==xo[j] && matrix[i][2]==xo[j];
+                    var b = matrix[0][i]==xo[j] && matrix[1][i]==xo[j] && matrix[2][i]==xo[j];
+                    var c = matrix[0][0]==xo[j] && matrix[1][1]==xo[j] && matrix[2][2]==xo[j];
+                    var d = matrix[0][2]==xo[j] && matrix[1][1]==xo[j] && matrix[2][0]==xo[j];
+                    if(a || b || c || d){
+                        winner(xo[j]);
+                        return;
+                    }
+                        
+                }
+            }
+        }
+
+        function winner(em){
+            cols.forEach(e=>{
+                if(e.innerHTML==em){
+                    e.style.color = "#1fd61f";
+                }
+            });
+            stop = true;
+        }
+
+        setInterval(function(){
+            fetch("/server.php",{
+            method: "GET"
+            })
+            .then(x=>x.json())
+            .then(data=>trait(data))
+        },1000);
+
+        function clear(){
+            matrix = [['','',''],['','',''],['','','']];
+            cols.forEach(e=>{
+                e.innerHTML="";
+            })
+        }
+
+        function trait(data){
+            clear();
+            if(data[0][0]!=id){
+                xo = "O";
+            }
+            data.forEach(e=>{
+                var tid = e[0];
+                var i   = e[2];
+                var j   = e[3];
+                var xo  = e[1];
+                matrix[i][j]= xo;
+                document.querySelector("#c"+i+j).innerHTML = xo;
+            })
+            check();
+            console.log(data);
+        }
+
+        function reset(){
+            var form = new FormData();
+                form.append("reset","");
+                fetch("/server.php",{
+                    method: "POST",
+                    body: form
+                    })
+                    .then(x=>x.text())
+                    .then(y=>console.log(y))
+        }
+    </script>
+</body>
+</html>
+
+
